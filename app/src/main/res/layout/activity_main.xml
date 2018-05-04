@@ -13,7 +13,6 @@
         android:layout_centerVertical="true"
         android:text="登录"
         android:id="@+id/button" />
-
     <EditText
         android:id="@+id/nametext"
         android:layout_width="250dp"

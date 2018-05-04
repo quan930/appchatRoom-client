@@ -1,6 +1,9 @@
 package com.example.daquan.qqchat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +27,9 @@ import static com.example.daquan.qqchat.MainActivity.client;
 public class MainTwoActivity extends AppCompatActivity {
     private String sendName;//发送者名字
     private List<String> nameList;
+    static Handler handler;
+
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +44,18 @@ public class MainTwoActivity extends AppCompatActivity {
         final TextView textView = findViewById(R.id.textView);//消息框
         alMessage.setTextView(textView);
         final PrintWriter out;
+        handler = new Handler()
+        {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case 1:
+                        textView.setText(msg.getData().getString("123"));
+                        break;
+                }
+            }
+        };
         try {
             out = new PrintWriter(new OutputStreamWriter(client.getOutputStream(),"UTF-8"),true);
             final ListView listView = (ListView) findViewById(R.id.list_view);

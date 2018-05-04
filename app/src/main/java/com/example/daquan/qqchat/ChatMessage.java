@@ -1,5 +1,7 @@
 package com.example.daquan.qqchat;
 
+import android.os.Bundle;
+import android.os.Message;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static com.example.daquan.qqchat.MainActivity.alMessage;
+import static com.example.daquan.qqchat.MainTwoActivity.handler;
 
 //全部消息
 //处理消息类//命令行界面
@@ -88,45 +91,55 @@ public class ChatMessage implements Runnable{
             while(true){//
                 String message = in.nextLine();//读入数据
 //				String s = message.substring(0,4);
-                if(message.substring(0,4).equals("*na*")) {//名字指令
-                    makeNameMessage = message.substring(4);
-                    getYorN = true;
-                    continue;
-                }else {
-                    if(message.substring(0,4).equals("*sp*")) {//人数指令
-                        personNum = Integer.parseInt(message.substring(4));
+                if(message.length()>=4){
+                    if(message.substring(0,4).equals("*na*")) {//名字指令
+                        makeNameMessage = message.substring(4);
                         getYorN = true;
                         continue;
                     }else {
-                        if(message.substring(0,4).equals("Name")) {//人名指令
-                            String[] sarray = message.substring(4).split("Name");
-                            for(String ss:sarray){
-                                names.add(ss);
-                            }
+                        if(message.substring(0,4).equals("*sp*")) {//人数指令
+                            personNum = Integer.parseInt(message.substring(4));
                             getYorN = true;
                             continue;
                         }else {
-                            if(message.substring(0,4).equals("*ou*")) {//退出指令
-                                getYorN = true;
-                                break;
-                            }else {
-                                if(message.substring(0,4).equals("*11*")) {
-                                    oneMessage = message.substring(4);
-                                    getYorN = true;
-                                    continue;
-                                }else {
-                                    messages.add(message);
-                                    StringBuilder messageList = new StringBuilder();
-                                    for(int i = 0; i < alMessage.getMessages().size(); i++) {
-                                        messageList.append(("第"+(i+1)+"条\t"+alMessage.getMessages().get(i)+"\n"));
+                            if(message.substring(0,4).equals("Name")) {//人名指令
+                                String[] sarray = message.substring(4).split("Name");
+                                for(String ss:sarray){
+                                    names.add(ss);
+                                }
 
+                                getYorN = true;
+                                continue;
+                            }else {
+                                if(message.substring(0,4).equals("*ou*")) {//退出指令
+                                    getYorN = true;
+                                    break;
+                                }else {
+                                    if(message.substring(0,4).equals("*11*")) {
+                                        oneMessage = message.substring(4);
+                                        getYorN = true;
+                                        continue;
+                                    }else {
+                                        messages.add(message);
+                                        StringBuilder messageList = new StringBuilder();
+                                        for(int i = 0; i < alMessage.getMessages().size(); i++) {
+                                            messageList.append(("第"+(i+1)+"条\t"+alMessage.getMessages().get(i)+"\n"));
+
+                                        }
+                                        Message messageal=handler.obtainMessage();
+                                        messageal.what = 1;
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("123", String.valueOf(messageList));
+                                        messageal.setData(bundle);
+                                        handler.sendMessage(messageal);
+                                        continue;
                                     }
-                                    textView.setText(messageList);
-                                    continue;
                                 }
                             }
                         }
                     }
+                }else{
+                    continue;
                 }
             }
         } catch (IOException e) {
